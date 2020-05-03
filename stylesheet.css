@@ -49,3 +49,7 @@ nav {
 .card {
   margin: 5px;
 }
+
+.list-group-item {
+  cursor: pointer;
+}

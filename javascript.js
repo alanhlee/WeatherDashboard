@@ -1,6 +1,6 @@
 // key: e9adb5ecd7dff0e9e1999612c1c3fdfd
 
-// (searching san francisco) api.openweathermap.org/data/2.5/forecast?q=San%20Francisco&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd
+// api.openweathermap.org/data/2.5/forecast?q=San%20Francisco&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd
 
 // testing fetch data
 
@@ -11,15 +11,34 @@
 // })
 
 // will store search history 
+
 let searchHistoryList = []
 let currentSearch = null
+// console.log(localStorage.getItem('searchHistoryList'))
+if (localStorage.getItem('searchHistoryList')) {
+  searchHistoryList = JSON.parse(localStorage.getItem('searchHistoryList'))
+  renderHistory()
+}
+
+function setCurrentSearch(city) {
+  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
+    .then(r => r.json())
+    .then(data => {
+      currentSearch = data
+      searchHistoryList.push(data)
+      localStorage.setItem('searchHistoryList', JSON.stringify(searchHistoryList))
+      renderHistory()
+      renderCurrent()
+      console.log(data)
+    })
+}
 
 function renderHistory() {
   document.getElementById('searchHistory').innerHTML = searchHistoryList.reduce(
     // allSearches = variable for initial value of reduce
     // cityObject = is each item within the list sequentially
     (allSearches, cityObject) => {
-      return allSearches += `<li class="list-group-item">${cityObject.city.name}</li>`
+      return allSearches += `<li onclick='setCurrentSearch("${cityObject.city.name}")' class="list-group-item">${cityObject.city.name}</li>`
     }, '')
 }
 
@@ -39,15 +58,7 @@ function renderCurrent() {
 document.getElementById('searchForm').onsubmit = (e) => {
   e.preventDefault()
   const city = document.getElementById('searchInput').value
-  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
-    .then(r => r.json())
-    .then(data => {
-      currentSearch = data
-      searchHistoryList.push(data)
-      renderHistory()
-      renderCurrent()
-      console.log(data)
-    })
+  setCurrentSearch(city)
 }
 
 // function for what i want in index item which is boostrap card with 4 different items of day/icon/temp/humidity
