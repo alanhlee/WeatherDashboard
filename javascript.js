@@ -19,7 +19,7 @@ if (localStorage.getItem('searchHistoryList')) {
   searchHistoryList = JSON.parse(localStorage.getItem('searchHistoryList'))
   renderHistory()
 }
-
+// fetching api city/and uv index
 function setCurrentSearch(city) {
   fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
     .then(r => r.json())
@@ -39,7 +39,7 @@ function setCurrentSearch(city) {
       console.log(data)
     })
 }
-
+// will render history search list on column 1
 function renderHistory() {
   document.getElementById('searchHistory').innerHTML = searchHistoryList.reduce(
     // allSearches = variable for initial value of reduce
