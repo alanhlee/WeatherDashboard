@@ -20,25 +20,23 @@ if (localStorage.getItem('searchHistoryList')) {
   renderHistory()
 }
 
-async function setCurrentSearch(city) {
-  let fetchCityOb await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
+function setCurrentSearch(city) {
+  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
     .then(r => r.json())
     .then(data => {
       currentSearch = data
       searchHistoryList.push(data)
-
+      fetch(`http://api.openweathermap.org/data/2.5/uvi?appid=e9adb5ecd7dff0e9e1999612c1c3fdfd&lat=${data.city.coord.lat}&lon=${data.city.coord.lon}`)
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('uvIndex').innerHTML = `
+          UV Index: ${data.value}
+          `
+        })
       localStorage.setItem('searchHistoryList', JSON.stringify(searchHistoryList))
       renderHistory()
       renderCurrent()
       console.log(data)
-    })
-  await fetch(`http://api.openweathermap.org/data/2.5/uvi?appid=e9adb5ecd7dff0e9e1999612c1c3fdfd&lat=${data.city.coord.lat}&lon=${data.city.coord.lon}`)
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById('uvIndex').innerHTML =
-        `
-          UV Index: ${data.value}
-          `
     })
 }
 
