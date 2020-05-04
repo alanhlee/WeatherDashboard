@@ -20,16 +20,25 @@ if (localStorage.getItem('searchHistoryList')) {
   renderHistory()
 }
 
-function setCurrentSearch(city) {
-  fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
+async function setCurrentSearch(city) {
+  let fetchCityOb await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=e9adb5ecd7dff0e9e1999612c1c3fdfd`)
     .then(r => r.json())
     .then(data => {
       currentSearch = data
       searchHistoryList.push(data)
+
       localStorage.setItem('searchHistoryList', JSON.stringify(searchHistoryList))
       renderHistory()
       renderCurrent()
       console.log(data)
+    })
+  await fetch(`http://api.openweathermap.org/data/2.5/uvi?appid=e9adb5ecd7dff0e9e1999612c1c3fdfd&lat=${data.city.coord.lat}&lon=${data.city.coord.lon}`)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('uvIndex').innerHTML =
+        `
+          UV Index: ${data.value}
+          `
     })
 }
 
@@ -50,6 +59,7 @@ function renderCurrent() {
   <p>${Math.round(currentSearch.list[0].main.temp * (9 / 5) - 459.67)}°F.</p>
   <p>Humidity: ${currentSearch.list[0].main.humidity}%</p>
   <p>Wind Speed: ${currentSearch.list[0].wind.speed}mph</p>
+  <p id='uvIndex'></p>
   `
   document.getElementById('forecast').innerHTML = renderForecastItem(0) + renderForecastItem(8) + renderForecastItem(16) + renderForecastItem(24) + renderForecastItem(32)
 }
